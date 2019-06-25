@@ -76,7 +76,10 @@ public class SqlSessionFactoryBuilder {
 
   public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
     try {
+    	//初始化XMLConfigBuilder
       XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);
+      //parser.parse() 把xml文件转化为对象
+      //解析xml生成Configuration对象
       return build(parser.parse());
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error building SqlSession.", e);
@@ -91,6 +94,7 @@ public class SqlSessionFactoryBuilder {
   }
     
   public SqlSessionFactory build(Configuration config) {
+	//默认获取是的SqlSessionFactory是DefaultSqlSessionFactory
     return new DefaultSqlSessionFactory(config);
   }
 

@@ -17,11 +17,13 @@ package org.apache.ibatis.builder.xml;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.apache.ibatis.binding.MapperProxyFactory;
 import org.apache.ibatis.builder.BaseBuilder;
 import org.apache.ibatis.builder.BuilderException;
 import org.apache.ibatis.datasource.DataSourceFactory;
@@ -93,10 +95,12 @@ public class XMLConfigBuilder extends BaseBuilder {
       throw new BuilderException("Each XMLConfigBuilder can only be used once.");
     }
     parsed = true;
+    //parser.evalNode("/configuration") 获取到configuration节点
+    //parseConfiguration 解析configuration节点
     parseConfiguration(parser.evalNode("/configuration"));
     return configuration;
   }
-
+  //对configuration节点下的所有子节点进行解析 对应的内容是mybatis-config.xml
   private void parseConfiguration(XNode root) {
     try {
       //issue #117 read properties first
@@ -113,6 +117,7 @@ public class XMLConfigBuilder extends BaseBuilder {
       environmentsElement(root.evalNode("environments"));
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
       typeHandlerElement(root.evalNode("typeHandlers"));
+      //重点  解析mappers节点
       mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
@@ -342,16 +347,20 @@ public class XMLConfigBuilder extends BaseBuilder {
       }
     }
   }
-
+  //对mappers节点的属性进行解析
   private void mapperElement(XNode parent) throws Exception {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
-        if ("package".equals(child.getName())) {
+        if ("package".equals(child.getName())) {//解析包下的所有mapper
           String mapperPackage = child.getStringAttribute("name");
+          //最终执行的和configuration.addMapper(mapperInterface)是一样的
           configuration.addMappers(mapperPackage);
         } else {
+        	//使用相对于类路径的资源引用
           String resource = child.getStringAttribute("resource");
+          //使用完全限定资源定位符（URL）
           String url = child.getStringAttribute("url");
+          // 使用映射器接口实现类的完全限定类名
           String mapperClass = child.getStringAttribute("class");
           if (resource != null && url == null && mapperClass == null) {
             ErrorContext.instance().resource(resource);
@@ -363,8 +372,12 @@ public class XMLConfigBuilder extends BaseBuilder {
             InputStream inputStream = Resources.getUrlAsStream(url);
             XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, url, configuration.getSqlFragments());
             mapperParser.parse();
-          } else if (resource == null && url == null && mapperClass != null) {
+          } else if (resource == null && url == null && mapperClass != null) {//重点看这个
+        	//根据全限定名获取类信息
             Class<?> mapperInterface = Resources.classForName(mapperClass);
+            //Map<Class<?>, MapperProxyFactory<?>> knownMappers
+            //里面都是把信息存到MapperRegistry对象的属性knownMappers中
+            //MapperRegistry对象则是configuration中的属性
             configuration.addMapper(mapperInterface);
           } else {
             throw new BuilderException("A mapper element may only specify a url, resource or class, but not more than one.");
