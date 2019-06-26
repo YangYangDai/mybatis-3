@@ -80,6 +80,7 @@ public class SqlSessionFactoryBuilder {
       XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);
       //parser.parse() 把xml文件转化为对象
       //解析xml生成Configuration对象
+      //再生成DefaultSqlSessionFactory
       return build(parser.parse());
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error building SqlSession.", e);
