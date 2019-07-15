@@ -89,19 +89,20 @@ public class XMLConfigBuilder extends BaseBuilder {
     this.environment = environment;
     this.parser = parser;
   }
-
+  //XMLConfigBuilder
   public Configuration parse() {
-    if (parsed) {
+    if (parsed) {//如果已经解析过了 就抛出异常
       throw new BuilderException("Each XMLConfigBuilder can only be used once.");
     }
     parsed = true;
-    //parser.evalNode("/configuration") 获取到configuration节点
+    //parser.evalNode("/configuration") 获取Document中configuration节点
     //parseConfiguration 解析configuration节点
     parseConfiguration(parser.evalNode("/configuration"));
     return configuration;
   }
-  //对configuration节点下的所有子节点进行解析 对应的内容是mybatis-config.xml
-  private void parseConfiguration(XNode root) {
+  //XMLConfigBuilder
+  //对configuration节点下的所有子节点进行解析 对应的内容是configure-mybatis.xml
+  private void parseConfiguration(XNode root) {//configuration节点
     try {
       //issue #117 read properties first
       propertiesElement(root.evalNode("properties"));
@@ -347,6 +348,7 @@ public class XMLConfigBuilder extends BaseBuilder {
       }
     }
   }
+  //XMLConfigBuilder
   //对mappers节点的属性进行解析
   private void mapperElement(XNode parent) throws Exception {
     if (parent != null) {
@@ -378,6 +380,7 @@ public class XMLConfigBuilder extends BaseBuilder {
             //Map<Class<?>, MapperProxyFactory<?>> knownMappers
             //里面都是把信息存到MapperRegistry对象的属性knownMappers中
             //MapperRegistry对象则是configuration中的属性
+            //最后都是会走这个方法
             configuration.addMapper(mapperInterface);
           } else {
             throw new BuilderException("A mapper element may only specify a url, resource or class, but not more than one.");

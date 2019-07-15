@@ -42,7 +42,10 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
 
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-    if (Object.class.equals(method.getDeclaringClass())) {
+	  //method.getDeclaringClass用来判断当前这个方法是哪个类的方法。
+	  //如果是Object类继承来的方法，直接反射调用
+      //如果是实现的接口规定的方法，利用Mybatis的MapperMethod调用
+	 if (Object.class.equals(method.getDeclaringClass())) {
       try {
         return method.invoke(this, args);
       } catch (Throwable t) {

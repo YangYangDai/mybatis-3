@@ -50,7 +50,8 @@ public class DefaultSqlSession implements SqlSession {
 
   private boolean autoCommit;
   private boolean dirty;
-
+  
+  //DefaultSqlSession
   public DefaultSqlSession(Configuration configuration, Executor executor, boolean autoCommit) {
     this.configuration = configuration;
     this.executor = executor;

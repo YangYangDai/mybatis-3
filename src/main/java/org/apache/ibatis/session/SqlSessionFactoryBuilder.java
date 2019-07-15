@@ -61,7 +61,7 @@ public class SqlSessionFactoryBuilder {
       }
     }
   }
-
+  //SqlSessionFactoryBuilder
   public SqlSessionFactory build(InputStream inputStream) {
     return build(inputStream, null, null);
   }
@@ -73,7 +73,7 @@ public class SqlSessionFactoryBuilder {
   public SqlSessionFactory build(InputStream inputStream, Properties properties) {
     return build(inputStream, null, properties);
   }
-
+  //SqlSessionFactoryBuilder
   public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
     try {
     	//初始化XMLConfigBuilder
@@ -93,7 +93,7 @@ public class SqlSessionFactoryBuilder {
       }
     }
   }
-    
+  //SqlSessionFactoryBuilder
   public SqlSessionFactory build(Configuration config) {
 	//默认获取是的SqlSessionFactory是DefaultSqlSessionFactory
     return new DefaultSqlSessionFactory(config);

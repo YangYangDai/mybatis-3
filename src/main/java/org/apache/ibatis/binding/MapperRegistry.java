@@ -57,6 +57,8 @@ public class MapperRegistry {
     return knownMappers.containsKey(type);
   }
 
+  //MapperRegistry
+  //每个mapper生成对应的MapperProxyFactory 放入HashMap
   public <T> void addMapper(Class<T> type) {
     if (type.isInterface()) {
       if (hasMapper(type)) {
@@ -65,9 +67,7 @@ public class MapperRegistry {
       boolean loadCompleted = false;
       try {
         knownMappers.put(type, new MapperProxyFactory<T>(type));
-        // It's important that the type is added before the parser is run
-        // otherwise the binding may automatically be attempted by the
-        // mapper parser. If the type is already known, it won't try.
+        //解析mapper中的使用了注解的sql语句
         MapperAnnotationBuilder parser = new MapperAnnotationBuilder(config, type);
         parser.parse();
         loadCompleted = true;

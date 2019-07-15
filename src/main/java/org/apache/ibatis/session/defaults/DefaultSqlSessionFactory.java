@@ -41,7 +41,7 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
   public DefaultSqlSessionFactory(Configuration configuration) {
     this.configuration = configuration;
   }
-
+  //DefaultSqlSessionFactory
   @Override
   public SqlSession openSession() {
     return openSessionFromDataSource(configuration.getDefaultExecutorType(), null, false);
@@ -87,7 +87,13 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     return configuration;
   }
 
-  
+  //DefaultSqlSessionFactory
+  /**
+   * 方法的入参是不是有点眼熟
+   * @param execType 执行器的类型 默认使用的是ExecutorType.SIMPLE
+   * @param level 事物的隔离级别
+   * @param autoCommit 是否自动提交事物
+   */
   private SqlSession openSessionFromDataSource(ExecutorType execType, TransactionIsolationLevel level, boolean autoCommit) {
     Transaction tx = null;
     try {

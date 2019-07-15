@@ -507,7 +507,13 @@ public class Configuration {
   public Executor newExecutor(Transaction transaction) {
     return newExecutor(transaction, defaultExecutorType);
   }
-
+  //Configuration
+  /**
+   * 
+   * @param transaction 默认使用的ManagedTransaction
+   * @param executorType 默认使用的是ExecutorType.SIMPLE
+   * @return
+   */
   public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
     executorType = executorType == null ? defaultExecutorType : executorType;
     executorType = executorType == null ? ExecutorType.SIMPLE : executorType;
@@ -521,9 +527,10 @@ public class Configuration {
     }
     if (cacheEnabled) {//是否开启了缓存
     	//开启了就传入由上面得到执行器new一个CachingExecutor
-    	//前面三种执行器才是真正的执行者
+    	//CachingExecutor使用了委派模式 前面三种执行器才是真正的执行者
       executor = new CachingExecutor(executor);
     }
+    //加到mybatis的拦截器中
     executor = (Executor) interceptorChain.pluginAll(executor);
     return executor;
   }
